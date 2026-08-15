@@ -127,13 +127,7 @@ function renderDay(day) {
   );
 
   const meals = el("div", { className: "meals" }, [el("h4", { text: "Где поесть" })]);
-  const table = el("table");
-  table.append(
-    el("thead", {}, [
-      el("tr", {}, ["Приём", "Ресторан", "Часы", "Завтрак", "На двоих"].map((h) => el("th", { text: h }))),
-    ])
-  );
-  const tbody = el("tbody");
+  const mealList = el("div", { className: "meal-list" });
   const rows = [
     [
       "Завтрак",
@@ -142,22 +136,21 @@ function renderDay(day) {
         day.breakfast.breakfastNote ? ` (${day.breakfast.breakfastNote})` : ""
       }`,
     ],
-    ["Обед", day.lunch, "—"],
-    ["Ужин", day.dinner, "—"],
+    ["Обед", day.lunch, null],
+    ["Ужин", day.dinner, null],
   ];
   for (const [label, meal, bf] of rows) {
-    tbody.append(
-      el("tr", {}, [
-        el("td", { text: label }),
-        el("td", {}, [mapsLink(mealMapQuery(meal), meal.name)]),
-        el("td", { text: meal.hours }),
-        el("td", { text: bf }),
-        el("td", { text: meal.cost }),
+    const meta = [meal.hours, bf, meal.cost].filter(Boolean).join(" · ");
+    mealList.append(
+      el("article", { className: "meal-card" }, [
+        el("p", { className: "meal-card__kind", text: label }),
+        el("p", { className: "meal-card__name" }, [mapsLink(mealMapQuery(meal), meal.name)]),
+        el("p", { className: "meal-card__meta", text: meta }),
+        meal.vibe ? el("p", { className: "meal-card__vibe", text: meal.vibe }) : null,
       ])
     );
   }
-  table.append(tbody);
-  meals.append(el("div", { className: "table-wrap" }, [table]));
+  meals.append(mealList);
   root.append(meals);
 
   root.append(
@@ -185,15 +178,19 @@ function renderDay(day) {
   return root;
 }
 
-function fillTable(tableId, rows) {
-  const tbody = document.querySelector(`#${tableId} tbody`);
+function fillTable(tableId, rows, labels = []) {
+  const table = document.getElementById(tableId);
+  const tbody = table.querySelector("tbody");
+  if (labels.length) table.dataset.labels = labels.join("|");
   tbody.replaceChildren();
   for (const cells of rows) {
     tbody.append(
       el(
         "tr",
         {},
-        cells.map((cell) => el("td", {}, [cell]))
+        cells.map((cell, i) =>
+          el("td", labels[i] ? { "data-label": labels[i] } : {}, [cell])
+        )
       )
     );
   }
@@ -253,7 +250,8 @@ async function main() {
       mapsLink(`${s.addr}, Санкт-Петербург`, s.addr),
       s.what,
       s.day,
-    ])
+    ]),
+    ["Адрес", "Что смотреть", "День"]
   );
 
   fillTable(
@@ -264,18 +262,21 @@ async function main() {
       d.breakfast.breakfastFrom,
       d.breakfast.breakfastUntil,
       d.breakfast.breakfastNote ?? "—",
-    ])
+    ]),
+    ["Дата", "Заведение", "С", "До", "Примечание"]
   );
 
   fillTable(
     "tickets-table",
-    TICKETS.map(([place, href, label, when]) => [place, link(href, label), when])
+    TICKETS.map(([place, href, label, when]) => [place, link(href, label), when]),
+    ["Место", "Ссылка", "Когда"]
   );
 
   document.getElementById("closed-count").textContent = String(CLOSED_DAYS.length);
   fillTable(
     "closed-table",
-    CLOSED_DAYS.map((r) => [r.place, r.closed])
+    CLOSED_DAYS.map((r) => [r.place, r.closed]),
+    ["Место", "Выходной"]
   );
 
   document.getElementById("trips-count").textContent = String(LONG_TRIPS.length);
@@ -286,7 +287,8 @@ async function main() {
         ? r.to.replace(/\(.*?\)/g, "").trim()
         : `${r.to}, Санкт-Петербург`;
       return [mapsLink(query, r.to), r.km, r.how, r.cost];
-    })
+    }),
+    ["Куда", "км", "Как", "Стоимость"]
   );
 
   fillTable(
@@ -298,7 +300,8 @@ async function main() {
       d.afternoon.place.split("(")[0].trim(),
       d.evening.place.split("(")[0].trim(),
       d.dinner.name,
-    ])
+    ]),
+    ["Дата", "День", "Утро", "День", "Вечер", "Ужин"]
   );
 
   setupCollapse();
