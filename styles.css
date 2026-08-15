@@ -79,9 +79,14 @@ a:hover {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(8, 22, 32, 0.15) 0%, rgba(8, 22, 32, 0.55) 55%, rgba(8, 22, 32, 0.82) 100%),
-    url("https://images.unsplash.com/photo-1556610961-2fecc5927173?auto=format&fit=crop&w=2000&q=80")
-      center / cover no-repeat;
+    linear-gradient(
+      180deg,
+      rgba(18, 28, 36, 0.18) 0%,
+      rgba(28, 22, 16, 0.35) 42%,
+      rgba(12, 18, 24, 0.78) 78%,
+      rgba(10, 14, 18, 0.9) 100%
+    ),
+    url("./assets/isaac-autumn.jpg") center 42% / cover no-repeat;
   transform: scale(1.04);
   animation: drift 18s ease-in-out infinite alternate;
 }
@@ -492,6 +497,12 @@ th {
   padding: 0 1rem 2.5rem;
   color: var(--muted);
   font-size: 0.88rem;
+}
+
+.footer__credit {
+  margin: 0.35rem 0 0;
+  font-size: 0.78rem;
+  opacity: 0.85;
 }
 
 @keyframes drift {
