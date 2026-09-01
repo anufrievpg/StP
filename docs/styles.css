@@ -102,12 +102,12 @@ a:hover {
   background:
     linear-gradient(
       180deg,
-      rgba(18, 28, 36, 0.18) 0%,
-      rgba(28, 22, 16, 0.35) 42%,
-      rgba(12, 18, 24, 0.78) 78%,
-      rgba(10, 14, 18, 0.9) 100%
+      rgba(12, 24, 48, 0.08) 0%,
+      rgba(18, 28, 36, 0.22) 38%,
+      rgba(12, 18, 24, 0.72) 78%,
+      rgba(10, 14, 18, 0.88) 100%
     ),
-    url("./assets/isaac-autumn.jpg") center 42% / cover no-repeat;
+    url("./assets/hero-bronze-horseman.jpg") center 38% / cover no-repeat;
   transform: scale(1.04);
   animation: drift 18s ease-in-out infinite alternate;
 }
