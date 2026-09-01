@@ -10,6 +10,8 @@ const TICKETS = [
   ["Новая Голландия — Сообщество", "https://www.newhollandsp.ru/community/", "newhollandsp.ru", "9 сен"],
   ["Кронштадт / Остров фортов", "https://ostrivfortov.ru/", "ostrivfortov.ru", "10 сен"],
   ["Севкабель Порт — выставки", "https://sevcableport.ru/", "sevcableport.ru", "11 сен"],
+  ["Музей «Мистериум»", "https://mysterium.ru/", "mysterium.ru", "11 сен, опц."],
+  ["Императорский фарфор", "https://ipm.ru/", "ipm.ru", "9 сен, опц."],
   ["Лахта Центр (смотровая)", "https://lakhta.center/", "lakhta.center", "7 сен, опционально"],
 ];
 
@@ -216,7 +218,7 @@ function parseFoodMin(cost) {
 async function main() {
   const res = await fetch("./data.json");
   const data = await res.json();
-  const { BASE, BASE_MAP, DAYS, CLOSED_DAYS, HIDDEN_SPOTS, LONG_TRIPS } = data;
+  const { BASE, BASE_MAP, DAYS, CLOSED_DAYS, HIDDEN_SPOTS, VO_WALK, EXTRA_MUSEUMS, TEMPLES, LONG_TRIPS } = data;
 
   document.getElementById("base-link").href = yandexMapsUrl(BASE_MAP);
   document.getElementById("base-link").textContent = BASE;
@@ -252,6 +254,42 @@ async function main() {
       s.day,
     ]),
     ["Адрес", "Что смотреть", "День"]
+  );
+
+  document.getElementById("vo-count").textContent = String(VO_WALK.length);
+  fillTable(
+    "vo-table",
+    VO_WALK.map((s) => [
+      s.step,
+      mapsLink(`${s.place}, Санкт-Петербург`, s.place),
+      s.detail,
+    ]),
+    ["№", "Точка", "Что искать"]
+  );
+
+  document.getElementById("museums-count").textContent = String(EXTRA_MUSEUMS.length);
+  fillTable(
+    "museums-table",
+    EXTRA_MUSEUMS.map((m) => [
+      m.name,
+      mapsLink(`${m.addr}, Санкт-Петербург`, m.addr),
+      m.when,
+      m.ticketUrl
+        ? el("span", {}, [m.note, " · ", link(m.ticketUrl, "сайт")])
+        : m.note,
+    ]),
+    ["Музей", "Адрес", "Когда", "Примечание"]
+  );
+
+  document.getElementById("temples-count").textContent = String(TEMPLES.length);
+  fillTable(
+    "temples-table",
+    TEMPLES.map((t) => [
+      t.name,
+      mapsLink(`${t.addr}, Санкт-Петербург`, t.addr),
+      t.note,
+    ]),
+    ["Храм", "Адрес", "Интересный факт"]
   );
 
   fillTable(
