@@ -218,7 +218,7 @@ function parseFoodMin(cost) {
 async function main() {
   const res = await fetch("./data.json");
   const data = await res.json();
-  const { BASE, BASE_MAP, DAYS, CLOSED_DAYS, HIDDEN_SPOTS, VO_WALK, EXTRA_MUSEUMS, TEMPLES, LONG_TRIPS } = data;
+  const { BASE, BASE_MAP, DAYS, CLOSED_DAYS, HIDDEN_SPOTS, VO_WALK, EXTRA_MUSEUMS, TEMPLES, ARCHITECTURE, LONG_TRIPS } = data;
 
   document.getElementById("base-link").href = yandexMapsUrl(BASE_MAP);
   document.getElementById("base-link").textContent = BASE;
@@ -290,6 +290,18 @@ async function main() {
       t.note,
     ]),
     ["Храм", "Адрес", "Интересный факт"]
+  );
+
+  document.getElementById("architecture-count").textContent = String(ARCHITECTURE.length);
+  fillTable(
+    "architecture-table",
+    ARCHITECTURE.map((a) => [
+      a.name,
+      mapsLink(`${a.addr}, Санкт-Петербург`, a.addr),
+      a.note,
+      a.day,
+    ]),
+    ["Дом", "Адрес", "Что смотреть", "Когда"]
   );
 
   fillTable(
